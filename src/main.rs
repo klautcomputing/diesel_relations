@@ -49,11 +49,20 @@ fn main() {
         .get_result(conn)
         .expect("Error saving page 2");
 
-
     // get pages for a book
-    let page_ids = Page::belonging_to(book).select(pages::book_id);
-    let pages = pages::table
-        .filter(pages::id.eq_any(page_ids))
+    let pages = Page::belonging_to(&book)
+        .inner_join(books::table)
+        .select(pages::all_columns)
         .load::<Page>(conn)
-        .expect("could not load pages");
+        .expect("Error loading pages");
+    // the data is the same we put in
+    assert_eq!(&page_1, pages.get(0).unwrap());
+    assert_eq!(&page_2, pages.get(1).unwrap());
+
+    // get a book from a page
+    let book_maybe = books::table
+        .find(page_2.book_id)
+        .first::<Book>(conn)
+        .expect("Error loading book");
+    assert_eq!(book_maybe, book);
 }
