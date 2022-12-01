@@ -1,5 +1,5 @@
 -- Your SQL goes here
-CREATE TABLE books (
+CREATE TABLE authors (
   id SERIAL PRIMARY KEY,
-  title VARCHAR NOT NULL
+  name VARCHAR NOT NULL
 );
